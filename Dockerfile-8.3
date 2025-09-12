@@ -1,0 +1,49 @@
+FROM php:8.3-fpm as base
+
+ARG GITHUB_API_TOKEN
+
+ENV DEBIAN_FRONTEND noninteractive
+ENV TZ=UTC
+
+ENV WWWROOT=/var/www
+ENV WWWUSER=www-data
+ENV WWWGROUP=www-data
+ENV PHP_EXTENSIONS="bz2 exif ftp gd gettext gmp intl mysqli opcache pcntl pdo_mysql pdo_pgsql pgsql phar pspell shmop simplexml snmp soap sockets sysvmsg sysvsem sysvshm tidy xsl zip"
+
+WORKDIR $WWWROOT
+
+WORKDIR /var/www
+
+RUN apt -y update
+RUN apt -y install --no-install-recommends \
+    nginx supervisor git openssh-client unzip dnsutils ffmpeg curl wget \
+    libbz2-dev \
+    libexif-dev \
+    libedit-dev \
+    libfreetype6-dev \
+    libgmp-dev \
+    libicu-dev \
+    libjpeg62-turbo-dev \
+    libjpeg-dev \
+    libmagickwand-dev \
+    libonig-dev \
+    libpng-dev \
+    libpq-dev \
+    libpspell-dev \
+    libsnmp-dev \
+    libtidy-dev \
+    libwebp-dev \
+    libxml2-dev \
+    libxslt1-dev \
+    libz-dev libzip-dev zlib1g-dev
+RUN rm -r /var/lib/apt/lists/*
+
+# PHP extensions
+RUN pecl install pcov
+
+RUN docker-php-ext-configure pdo_mysql --with-pdo-mysql=mysqlnd
+RUN docker-php-ext-configure opcache --enable-opcache
+RUN docker-php-ext-configure gd --with-jpeg=/usr/include/ --with-webp=/usr/include/
+
+RUN docker-php-ext-install -j$(nproc) $PHP_EXTENSIONS
+RUN docker-php-ext-enable $PHP_EXTENSIONS
