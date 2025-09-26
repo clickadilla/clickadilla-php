@@ -8,7 +8,8 @@ ENV TZ=UTC
 ENV WWWROOT=/var/www
 ENV WWWUSER=www-data
 ENV WWWGROUP=www-data
-ENV PHP_EXTENSIONS="bz2 exif ftp gd gettext gmp intl mysqli opcache pcntl pdo_mysql pdo_pgsql pgsql phar pspell shmop simplexml snmp soap sockets sysvmsg sysvsem sysvshm tidy xsl zip"
+# pcntl removed due to bogus implementation of timeouts
+ENV PHP_EXTENSIONS="bz2 exif ftp gd gettext gmp intl mysqli opcache pdo_mysql pdo_pgsql pgsql phar pspell shmop simplexml snmp soap sockets sysvmsg sysvsem sysvshm tidy xsl zip"
 
 WORKDIR $WWWROOT
 
