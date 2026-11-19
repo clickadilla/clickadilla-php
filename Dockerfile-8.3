@@ -52,6 +52,7 @@ RUN set -eux \
     && ./configure --with-compat --add-dynamic-module=../ngx_http_geoip2_module \
     && make modules \
     && install -m0644 objs/ngx_http_geoip2_module.so /usr/lib/nginx/modules/ngx_http_geoip2_module.so \
+    && mkdir -p /usr/share/GeoIP \
     && cd / && rm -rf /tmp/geoip2build
 RUN rm -r /var/lib/apt/lists/*
 
