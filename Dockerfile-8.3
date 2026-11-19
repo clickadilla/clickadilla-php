@@ -15,7 +15,11 @@ WORKDIR $WWWROOT
 
 WORKDIR /var/www
 
-RUN apt -y update
+RUN apt -y update \
+    && apt -y install --no-install-recommends ca-certificates curl gnupg2 \
+    && curl -fsSL https://nginx.org/keys/nginx_signing.key | gpg --dearmor -o /usr/share/keyrings/nginx-archive-keyring.gpg \
+    && echo "deb [signed-by=/usr/share/keyrings/nginx-archive-keyring.gpg] https://nginx.org/packages/mainline/debian $(. /etc/os-release && echo $VERSION_CODENAME) nginx" > /etc/apt/sources.list.d/nginx.list \
+    && apt -y update
 RUN apt -y install --no-install-recommends \
     nginx supervisor git openssh-client unzip dnsutils ffmpeg curl wget \
     libbz2-dev \
